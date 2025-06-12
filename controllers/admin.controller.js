@@ -22,11 +22,18 @@ if (correoExistente) {
 
 exports.crearUsuario = async (req, res) => {
   const { nombre, correo, contrasena, rol } = req.body;
+
+  const correoExistente = await Usuario.findOne({ correo });
+  if (correoExistente) {
+    return res.status(400).json({ msg: 'Correo ya registrado' });
+  }
+
   const hashed = await bcrypt.hash(contrasena, 10);
   const usuario = new Usuario({ nombre, correo, contrasena: hashed, rol });
   await usuario.save();
   res.status(201).json(usuario);
 };
+
 
 exports.asignarViaje = async (req, res) => {
   const { viajeId, conductorId } = req.body;
