@@ -1,7 +1,8 @@
-module.exports = (...rolesPermitidos) => {
+module.exports = (rolesPermitidos) => {
   return (req, res, next) => {
-    if (!rolesPermitidos.includes(req.usuario.rol)) {
-      return res.status(403).json({ msg: 'Acceso denegado' });
+    const { rol } = req.usuario;
+    if (!rolesPermitidos.includes(rol)) {
+      return res.status(403).json({ msg: 'No tienes permisos para acceder a este recurso' });
     }
     next();
   };

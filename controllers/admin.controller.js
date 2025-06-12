@@ -11,32 +11,40 @@ exports.obtenerUsuarios = async (req, res) => {
   }
 };
 
-if (!nombre || !correo || !contrasena || !rol) {
-  return res.status(400).json({ mensaje: 'Faltan campos obligatorios' });
-}
-
-const correoExistente = await Usuario.findOne({ correo });
-if (correoExistente) {
-  return res.status(400).json({ mensaje: 'El correo ya está en uso' });
-}
-
 exports.crearUsuario = async (req, res) => {
   const { nombre, correo, contrasena, rol } = req.body;
 
-  const correoExistente = await Usuario.findOne({ correo });
-  if (correoExistente) {
-    return res.status(400).json({ msg: 'Correo ya registrado' });
+  if (!nombre || !correo || !contrasena || !rol) {
+    return res.status(400).json({ mensaje: 'Faltan campos obligatorios' });
   }
 
-  const hashed = await bcrypt.hash(contrasena, 10);
-  const usuario = new Usuario({ nombre, correo, contrasena: hashed, rol });
-  await usuario.save();
-  res.status(201).json(usuario);
-};
+  try {
+    const correoExistente = await Usuario.findOne({ correo });
+    if (correoExistente) {
+      return res.status(400).json({ mensaje: 'El correo ya está en uso' });
+    }
 
+    const hashed = await bcrypt.hash(contrasena, 10);
+    const usuario = new Usuario({ nombre, correo, contrasena: hashed, rol });
+    await usuario.save();
+
+    res.status(201).json(usuario);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al crear usuario', error });
+  }
+};
 
 exports.asignarViaje = async (req, res) => {
   const { viajeId, conductorId } = req.body;
-  const viaje = await Viaje.findByIdAndUpdate(viajeId, { conductor: conductorId }, { new: true });
-  res.json(viaje);
+
+  try {
+    const viaje = await Viaje.findByIdAndUpdate(
+      viajeId,
+      { conductor: conductorId },
+      { new: true }
+    );
+    res.json(viaje);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al asignar viaje', error });
+  }
 };
