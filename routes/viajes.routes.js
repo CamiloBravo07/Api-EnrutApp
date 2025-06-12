@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../middlewares/verifyToken');
-const authorizeRole = require('../middlewares/authorizeRole');
+const verifyToken = require('../middleware/verifyToken');
+const authorizeRole = require('../middleware/authorizeRole');
 const { crearViaje, misViajes } = require('../controllers/cliente.controller');
 
 router.use(verifyToken);
