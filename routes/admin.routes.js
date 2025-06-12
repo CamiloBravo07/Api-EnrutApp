@@ -1,13 +1,21 @@
 // routes/admin.routes.js
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/admin.controller');
+const {
+  obtenerUsuarios,
+  crearUsuario,
+  asignarViaje
+} = require('../controllers/admin.controller');
 const verifyToken = require('../middlewares/verifyToken');
 const authorizeRole = require('../middlewares/authorizeRole');
 
-// Solo accesibles por administradores
-router.get('/usuarios', verifyToken, authorizeRole('admin'), adminController.obtenerUsuarios);
-router.post('/usuarios', verifyToken, authorizeRole('admin'), adminController.crearUsuario);
-router.post('/asignar-viaje', verifyToken, authorizeRole('admin'), adminController.asignarViaje);
+// Aplica los middlewares a todas las rutas de este router
+router.use(verifyToken);
+router.use(authorizeRole('admin'));
+
+// Rutas protegidas
+router.get('/usuarios', obtenerUsuarios);
+router.post('/usuarios', crearUsuario);
+router.put('/asignar-viaje', asignarViaje);
 
 module.exports = router;

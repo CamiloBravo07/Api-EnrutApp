@@ -1,14 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../middleware/verifyToken');
-const authorizeRole = require('../middleware/authorizeRole');
-const { obtenerUsuarios, crearUsuario, asignarViaje } = require('../controllers/admin.controller');
+const { login, registro } = require('../controllers/auth.controller');
 
-router.use(verifyToken);
-router.use(authorizeRole(['admin']));
-
-router.get('/usuarios', obtenerUsuarios);
-router.post('/usuarios', crearUsuario);
-router.put('/asignar-viaje', asignarViaje);
+// No se necesita token aquí
+router.post('/login', login);
+router.post('/registro', registro);
 
 module.exports = router;
