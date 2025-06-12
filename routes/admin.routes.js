@@ -1,14 +1,13 @@
+// routes/admin.routes.js
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
+const verifyToken = require('../middlewares/verifyToken');
+const authorizeRole = require('../middlewares/authorizeRole');
 
-// Ruta para obtener todos los usuarios
-router.get('/usuarios', adminController.obtenerUsuarios);
-
-// Ruta para crear un nuevo usuario
-router.post('/usuarios', adminController.crearUsuario);
-
-// Ruta para asignar un viaje a un conductor
-router.post('/asignar-viaje', adminController.asignarViaje);
+// Solo accesibles por administradores
+router.get('/usuarios', verifyToken, authorizeRole('admin'), adminController.obtenerUsuarios);
+router.post('/usuarios', verifyToken, authorizeRole('admin'), adminController.crearUsuario);
+router.post('/asignar-viaje', verifyToken, authorizeRole('admin'), adminController.asignarViaje);
 
 module.exports = router;
